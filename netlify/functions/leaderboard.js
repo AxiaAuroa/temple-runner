@@ -98,18 +98,50 @@ exports.handler = async (event, context) => {
         };
       }
       
-      // Insert score
-      await collection.insertOne({
-        name: data.name,
-        score: data.score,
-        timestamp: new Date()
-      });
+      // Check if this score is high enough to make the leaderboard
+      const lowestScoreEntry = await collection
+        .find({})
+        .sort({ score: 1 })
+        .limit(1)
+        .toArray();
       
-      return {
-        statusCode: 200,
-        headers,
-        body: JSON.stringify({ message: 'Score saved successfully' }),
-      };
+      const currentCount = await collection.countDocuments();
+      
+      // If we have less than 10 entries, or this score is higher than the lowest score
+      if (currentCount < 10 || 
+          (lowestScoreEntry.length > 0 && data.score > lowestScoreEntry[0].score)) {
+        
+        // If we already have 10 entries, remove the lowest one
+        if (currentCount >= 10 && lowestScoreEntry.length > 0) {
+          await collection.deleteOne({ _id: lowestScoreEntry[0]._id });
+        }
+        
+        // Insert the new score
+        await collection.insertOne({
+          name: data.name,
+          score: data.score,
+          timestamp: new Date()
+        });
+        
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({ 
+            message: 'Congratulations! You made it to the leaderboard!',
+            madeLeaderboard: true
+          }),
+        };
+      } else {
+        // Score not high enough
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({ 
+            message: 'Score not high enough for the leaderboard',
+            madeLeaderboard: false
+          }),
+        };
+      }
     }
     
     return {

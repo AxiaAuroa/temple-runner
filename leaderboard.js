@@ -17,11 +17,19 @@ Game.leaderboard = {
     .then(response => response.json())
     .then(data => {
       console.log("Score saved response:", data);
-      return data.error ? false : true;
+      return {
+        success: !data.error,
+        madeLeaderboard: data.madeLeaderboard || false,
+        message: data.message || ""
+      };
     })
     .catch(error => {
       console.error("Error saving score:", error);
-      return false;
+      return {
+        success: false,
+        madeLeaderboard: false,
+        message: "Error saving score"
+      };
     });
   },
   
@@ -31,11 +39,11 @@ Game.leaderboard = {
       .then(response => response.json())
       .then(data => {
         console.log("Leaderboard data:", data);
-        callback(data.leaderboard, data.resetTime);
+        callback(data.leaderboard || [], data.resetTime || "");
       })
       .catch(error => {
         console.error("Error getting leaderboard:", error);
-        callback([], "Error");
+        callback([], "");
       });
   }
 };
