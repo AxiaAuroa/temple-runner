@@ -62,14 +62,14 @@ exports.handler = async (event, context) => {
       // Get top 10 scores
       const leaderboardData = await collection
         .find({})
-        .sort({ score: 1 }) // Lower score is better (faster time)
+        .sort({ score: -1 })
         .limit(10)
         .toArray();
       
       const formattedData = leaderboardData.map((entry, index) => ({
         rank: index + 1,
         name: entry.name,
-        score: entry.score.toFixed(1)
+        score: entry.score
       }));
       
       return {
@@ -101,15 +101,15 @@ exports.handler = async (event, context) => {
       // Check if this score is high enough to make the leaderboard
       const lowestScoreEntry = await collection
         .find({})
-        .sort({ score: -1 }) // Higher score is worse (slower time)
+        .sort({ score: 1 })
         .limit(1)
         .toArray();
       
       const currentCount = await collection.countDocuments();
       
-      // If we have less than 10 entries, or this score is better than the lowest score
+      // If we have less than 10 entries, or this score is higher than the lowest score
       if (currentCount < 10 || 
-          (lowestScoreEntry.length > 0 && data.score < lowestScoreEntry[0].score)) {
+          (lowestScoreEntry.length > 0 && data.score > lowestScoreEntry[0].score)) {
         
         // If we already have 10 entries, remove the lowest one
         if (currentCount >= 10 && lowestScoreEntry.length > 0) {
@@ -119,7 +119,6 @@ exports.handler = async (event, context) => {
         // Insert the new score
         await collection.insertOne({
           name: data.name,
-          wallet: data.wallet,
           score: data.score,
           timestamp: new Date()
         });

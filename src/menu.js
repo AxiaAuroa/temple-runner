@@ -113,7 +113,7 @@ Crafty.scene('startMenu', function() {
 			Crafty.background('#000000');
 			
 			// Leaderboard title
-			var leaderboardTitle = Crafty.e('CustomText')
+			var leaderboardTitle = Crafty.e('2D, DOM, Text')
 				.attr({x: 0, y: 50, w: Game.width})
 				.text('WEEKLY LEADERBOARD')
 				.textColor('#FFFFFF')
@@ -126,6 +126,14 @@ Crafty.scene('startMenu', function() {
 				.text('LOADING LEADERBOARD...')
 				.textColor('#FFFFFF')
 				.textFont({size: '14px', family: 'arcade'})
+				.textAlign('center');
+			
+			// Subtitle
+			var subtitle = Crafty.e('2D, DOM, Text')
+				.attr({x: 0, y: 100, w: Game.width})
+				.text('COMPLETE LEVEL 20 TO JOIN THE LEADERBOARD')
+				.textColor('#AAAAAA')
+				.textFont({size: '12px', family: 'arcade'})
 				.textAlign('center');
 			
 			// Loading message
@@ -156,37 +164,35 @@ Crafty.scene('startMenu', function() {
 				if (leaderboardData.length === 0) {
 					Crafty.e('2D, DOM, Text')
 						.attr({x: 0, y: 200, w: Game.width})
-						.text('NO SCORES YET')
-						.textColor('#FFFFFF')
-						.textFont({size: '24px', family: 'arcade'})
-						.textAlign('center');
-						
-					Crafty.e('2D, DOM, Text')
-						.attr({x: 0, y: 240, w: Game.width})
-						.text('BE THE FIRST TO PLAY!')
+						.text('BE THE FIRST TO COMPLETE THE GAME!')
 						.textColor('#FFFFFF')
 						.textFont({size: '18px', family: 'arcade'})
 						.textAlign('center');
 				} else {
-					// Display leaderboard entries
+					// Header row
+					Crafty.e('2D, DOM, Text')
+						.attr({x: Game.width/2 - 150, y: 130, w: 300})
+						.text('RANK    PLAYER    SCORE')
+						.textColor('#AAAAAA')
+						.textFont({size: '16px', family: 'arcade'});
+					
+					// Leaderboard entries
 					leaderboardData.forEach(function(entry, index) {
-						var yPos = 150 + (index * 30);
+						var yPos = 160 + (index * 25);
 						
 						// Rank
 						Crafty.e('2D, DOM, Text')
-							.attr({x: Game.width/2 - 150, y: yPos, w: 30})
-							.text(entry.rank + '.')
+							.attr({x: Game.width/2 - 150, y: yPos, w: 50})
+							.text(entry.rank)
 							.textColor('#FFFFFF')
-							.textFont({size: '16px', family: 'arcade'})
-							.textAlign('right');
+							.textFont({size: '16px', family: 'arcade'});
 						
 						// Name
 						Crafty.e('2D, DOM, Text')
-							.attr({x: Game.width/2 - 110, y: yPos, w: 180})
+							.attr({x: Game.width/2 - 80, y: yPos, w: 150})
 							.text(entry.name)
 							.textColor('#FFFFFF')
-							.textFont({size: '16px', family: 'arcade'})
-							.textAlign('left');
+							.textFont({size: '16px', family: 'arcade'});
 						
 						// Score
 						Crafty.e('2D, DOM, Text')
@@ -214,44 +220,5 @@ Crafty.scene('startMenu', function() {
 		
 		Crafty.scene('leaderboard');
 	}
-	
-	// When leaderboard is clicked, show a simple "coming soon" message
-	leaderboardTitle.bind('Click', function() {
-		// Create a simple overlay with a message
-		Crafty.scene('leaderboardPlaceholder', function() {
-			// Background
-			Crafty.background('#000000');
-			
-			// Leaderboard title
-			var title = Crafty.e('CustomText')
-				.attr({x: 0, y: 100, w: Game.width})
-				.text('LEADERBOARD')
-				.textColor('#FFFFFF')
-				.textFont({size: '24px', family: 'arcade'})
-				.textAlign('center');
-				
-			// Coming soon message
-			var message = Crafty.e('CustomText')
-				.attr({x: 0, y: 200, w: Game.width})
-				.text('COMING SOON!')
-				.textColor('#FFFF55')
-				.textFont({size: '20px', family: 'arcade'})
-				.textAlign('center');
-			
-			// Back button
-			var backButton = Crafty.e('2D, DOM, Color, Text, Mouse')
-				.attr({x: Game.width/2 - 60, y: 300, w: 120, h: 40})
-				.color('#355157')
-				.text('BACK')
-				.textColor('#FFFFFF')
-				.textFont({size: '16px', family: 'arcade'})
-				.css({'text-align': 'center', 'padding-top': '10px', 'cursor': 'pointer'})
-				.bind('MouseDown', function() {
-					Crafty.scene('startMenu');
-				});
-		});
-		
-		Crafty.scene('leaderboardPlaceholder');
-	});
 	
 });

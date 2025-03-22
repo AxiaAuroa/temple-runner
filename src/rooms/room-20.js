@@ -28,90 +28,144 @@ Crafty.scene('room-20', function() {
 	// ground
 	Crafty.e('Platform').place(0, Game.height-16).size(Game.width, 16);
 	
-	// Create completion overlay
-	var overlay = Crafty.e('2D, DOM, Color')
-		.attr({x: 0, y: 0, w: Game.width, h: Game.height, z: 900})
-		.color('#000000')
-		.css({opacity: 0.8});
-	
+	// Add congratulation text and score
 	var congratsText = Crafty.e('CustomText')
-		.text('CONGRATULATIONS!')
-		.place(0, 80)
-		.textFont({size: '28px'})
-		.textColor('#FFFFFF')
-		.textAlign('center')
-		.attr({z: 901});
-	
-	var completionText = Crafty.e('CustomText')
-		.text('YOU COMPLETED ALL LEVELS')
-		.place(0, 120)
+		.text('THANKS&nbsp;&nbsp;FOR&nbsp;&nbsp;PLAYING&nbsp;&nbsp;THE&nbsp;&nbsp;GAME!')
+		.place(0, 140)
 		.textFont({size: '20px'})
-		.textColor('#FFFFFF')
-		.textAlign('center')
-		.attr({z: 901});
+		.textColor('#355157')
+		.textAlign('center');
 	
 	var scoreText = Crafty.e('CustomText')
-		.text('YOUR SCORE: ' + finalTime.toFixed(1))
-		.place(0, 160)
+		.text('YOUR&nbsp;&nbsp;SCORE:&nbsp;&nbsp;' + finalTime.toFixed(1))
+		.place(0, 180)
 		.textFont({size: '20px'})
-		.textColor('#FFFFFF')
-		.textAlign('center')
-		.attr({z: 901});
+		.textColor('#355157')
+		.textAlign('center');
 	
-	// Simple message about leaderboard
-	var leaderboardMsg = Crafty.e('CustomText')
-		.text('LEADERBOARD COMING SOON!')
-		.place(0, 220)
-		.textFont({size: '18px'})
-		.textColor('#FFFF55')
-		.textAlign('center')
-		.attr({z: 901});
+	// Check if player qualifies for leaderboard
+	Game.leaderboard.checkQualification(finalTime, function(qualifies) {
+		if (qualifies) {
+			// Create input fields for username and wallet
+			var instructionText = Crafty.e('CustomText')
+				.text('YOU&nbsp;&nbsp;QUALIFIED&nbsp;&nbsp;FOR&nbsp;&nbsp;THE&nbsp;&nbsp;LEADERBOARD!')
+				.place(0, 220)
+				.textFont({size: '16px'})
+				.textColor('#355157')
+				.textAlign('center');
+			
+			var usernamePrompt = Crafty.e('CustomText')
+				.text('ENTER&nbsp;&nbsp;YOUR&nbsp;&nbsp;USERNAME:')
+				.place(0, 250)
+				.textFont({size: '14px'})
+				.textColor('#355157')
+				.textAlign('center');
+			
+			// Username input field placeholder
+			var usernameField = Crafty.e('2D, DOM, Color, Text, Mouse')
+				.attr({x: Game.width/2 - 100, y: 275, w: 200, h: 25, z: 1000})
+				.color('#FFFFFF')
+				.css({'border': '2px solid #355157', 'text-align': 'center', 'padding': '2px'})
+				.text('Click to type username')
+				.bind('Click', function() {
+					if (this.text() === 'Click to type username') {
+						this.text('');
+					}
+					var field = this;
+					var input = prompt("Enter your username:");
+					if (input) {
+						field.text(input);
+					} else {
+						field.text('Click to type username');
+					}
+				});
+			
+			var walletPrompt = Crafty.e('CustomText')
+				.text('ENTER&nbsp;&nbsp;YOUR&nbsp;&nbsp;SOLANA&nbsp;&nbsp;WALLET:')
+				.place(0, 310)
+				.textFont({size: '14px'})
+				.textColor('#355157')
+				.textAlign('center');
+			
+			// Wallet address input field placeholder
+			var walletField = Crafty.e('2D, DOM, Color, Text, Mouse')
+				.attr({x: Game.width/2 - 100, y: 335, w: 200, h: 25, z: 1000})
+				.color('#FFFFFF')
+				.css({'border': '2px solid #355157', 'text-align': 'center', 'padding': '2px'})
+				.text('Click to type wallet address')
+				.bind('Click', function() {
+					if (this.text() === 'Click to type wallet address') {
+						this.text('');
+					}
+					var field = this;
+					var input = prompt("Enter your Solana wallet address:");
+					if (input) {
+						field.text(input);
+					} else {
+						field.text('Click to type wallet address');
+					}
+				});
+			
+			var submitButton = Crafty.e('2D, DOM, Color, Text, Mouse')
+				.attr({x: Game.width/2 - 60, y: 375, w: 120, h: 30, z: 1000})
+				.color('#355157')
+				.text('SUBMIT')
+				.textFont({size: '16px', family: 'arcade'})
+				.textColor('#FFFFFF')
+				.css({'text-align': 'center', 'padding-top': '5px'})
+				.bind('MouseDown', function() {
+					// Submit logic would go here - connect to backend
+					if (usernameField.text() !== 'Click to type username' && 
+						walletField.text() !== 'Click to type wallet address') {
+						// Save to leaderboard
+						var success = Game.leaderboard.saveScore(
+							usernameField.text(),
+							walletField.text(),
+							finalTime
+						);
+						
+						if (success) {
+							// Show confirmation
+							Crafty.e('FloatingMessage')
+								.text('SCORE SUBMITTED!')
+								.place(Game.width/2 - 100, 150);
+							
+							// Disable submit button to prevent multiple submissions
+							submitButton.unbind('MouseDown');
+							submitButton.color('#777777');
+							submitButton.text('SUBMITTED');
+						} else {
+							// Show error
+							Crafty.e('FloatingMessage')
+								.text('SUBMISSION FAILED!')
+								.place(Game.width/2 - 100, 150);
+						}
+					} else {
+						// Show error if fields are not filled
+						Crafty.e('FloatingMessage')
+							.text('PLEASE FILL ALL FIELDS!')
+							.place(Game.width/2 - 100, 150);
+					}
+				});
+		} else {
+			var notQualifiedText = Crafty.e('CustomText')
+				.text('KEEP&nbsp;&nbsp;PRACTICING&nbsp;&nbsp;TO&nbsp;&nbsp;REACH&nbsp;&nbsp;THE&nbsp;&nbsp;LEADERBOARD!')
+				.place(0, 230)
+				.textFont({size: '14px'})
+				.textColor('#355157')
+				.textAlign('center');
+		}
+	});
 	
-	// Return to menu button
+	// Back to main menu button
 	var menuButton = Crafty.e('2D, DOM, Color, Text, Mouse')
-		.attr({x: Game.width/2 - 100, y: 300, w: 200, h: 40, z: 901})
-		.color('rgba(53, 81, 87, 0.8)')
-		.css({
-			'border': '2px solid #FFFFFF', 
-			'text-align': 'center', 
-			'padding-top': '10px',
-			'border-radius': '4px',
-			'cursor': 'pointer'
-		})
+		.attr({x: Game.width/2 - 70, y: 420, w: 140, h: 30, z: 1000})
+		.color('#355157')
+		.text('MAIN MENU')
 		.textFont({size: '16px', family: 'arcade'})
 		.textColor('#FFFFFF')
-		.text('RETURN TO MENU')
-		.bind('MouseOver', function() {
-			this.color('rgba(73, 101, 107, 0.8)');
-		})
-		.bind('MouseOut', function() {
-			this.color('rgba(53, 81, 87, 0.8)');
-		})
-		.bind('Click', function() {
+		.css({'text-align': 'center', 'padding-top': '5px'})
+		.bind('MouseDown', function() {
 			Crafty.scene('startMenu');
-		});
-	
-	// Play again button
-	var playAgainButton = Crafty.e('2D, DOM, Color, Text, Mouse')
-		.attr({x: Game.width/2 - 100, y: 360, w: 200, h: 40, z: 901})
-		.color('rgba(53, 81, 87, 0.8)')
-		.css({
-			'border': '2px solid #FFFFFF', 
-			'text-align': 'center', 
-			'padding-top': '10px',
-			'border-radius': '4px',
-			'cursor': 'pointer'
-		})
-		.textFont({size: '16px', family: 'arcade'})
-		.textColor('#FFFFFF')
-		.text('PLAY AGAIN')
-		.bind('MouseOver', function() {
-			this.color('rgba(73, 101, 107, 0.8)');
-		})
-		.bind('MouseOut', function() {
-			this.color('rgba(53, 81, 87, 0.8)');
-		})
-		.bind('Click', function() {
-			Crafty.scene('room-1');
 		});
 });
