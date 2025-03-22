@@ -20,117 +20,24 @@ var Game = {
 	timeAttack: timeAttackMode(),
 	// Leaderboard functionality with database integration
 	leaderboard: {
-		apiUrl: 'https://api.yourgameserver.com/leaderboard', // Replace with your actual API endpoint
+		apiUrl: '/api/leaderboard', // This will be redirected to our Netlify function
 		
-		// Get top scores from the server
+		// These functions will be overridden by the ones in leaderboard.js
 		getTopScores: function(callback) {
-			// In a real implementation, this would be an actual API call
-			// For now, we'll simulate with mock data
-			
-			// Simulated API call
 			setTimeout(function() {
-				var mockData = [
-					{rank: 1, name: "Player1", score: 145.5},
-					{rank: 2, name: "Player2", score: 160.2},
-					{rank: 3, name: "Player3", score: 175.8},
-					{rank: 4, name: "Player4", score: 190.3},
-					{rank: 5, name: "Player5", score: 210.7},
-					{rank: 6, name: "Player6", score: 230.1},
-					{rank: 7, name: "Player7", score: 250.5},
-					{rank: 8, name: "Player8", score: 270.9},
-					{rank: 9, name: "Player9", score: 290.2},
-					{rank: 10, name: "Player10", score: 320.5}
-				];
-				
-				// Calculate reset time (in a real implementation, this would come from the server)
-				var resetTime = "5 DAYS 12 HOURS";
-				
-				callback(mockData, resetTime);
-				
-				/* 
-				// Real implementation would look something like this:
-				fetch(Game.leaderboard.apiUrl + '/top10')
-					.then(response => response.json())
-					.then(data => {
-						callback(data.scores, data.resetTime);
-					})
-					.catch(error => {
-						console.error('Error fetching leaderboard:', error);
-						callback([], "ERROR LOADING");
-					});
-				*/
-			}, 1000);
+				callback([], "LOADING...");
+			}, 100);
 		},
 		
-		// Check if player qualifies for leaderboard
 		checkQualification: function(score, callback) {
-			// In a real implementation, this would make an API call to check
-			// For now, we'll simulate with a mock check
-			
-			// Simulated API call
 			setTimeout(function() {
-				// Get the current leaderboard to check qualification
-				Game.leaderboard.getTopScores(function(leaderboardData) {
-					var qualifies = false;
-					
-					// If there are fewer than 10 entries, player automatically qualifies
-					if (leaderboardData.length < 10) {
-						qualifies = true;
-					} else {
-						// Check if player's score is better than the worst score on the leaderboard
-						var worstScore = leaderboardData[leaderboardData.length - 1].score;
-						qualifies = score < worstScore;
-					}
-					
-					callback(qualifies);
-				});
-				
-				/* 
-				// Real implementation would look something like this:
-				fetch(Game.leaderboard.apiUrl + '/check-qualification?score=' + score)
-					.then(response => response.json())
-					.then(data => {
-						callback(data.qualifies);
-					})
-					.catch(error => {
-						console.error('Error checking qualification:', error);
-						callback(false);
-					});
-				*/
-			}, 500);
+				callback(true);
+			}, 100);
 		},
 		
-		// Save score to leaderboard
 		saveScore: function(username, wallet, score) {
-			// In a real implementation, this would make an API call to save the score
-			console.log("Saving score:", username, wallet, score);
-			
-			// Simulated API call
-			/* 
-			// Real implementation would look something like this:
-			fetch(Game.leaderboard.apiUrl + '/save-score', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					username: username,
-					wallet: wallet,
-					score: score
-				}),
-			})
-			.then(response => response.json())
-			.then(data => {
-				console.log('Score saved successfully:', data);
-				return true;
-			})
-			.catch(error => {
-				console.error('Error saving score:', error);
-				return false;
-			});
-			*/
-			
-			return true;
+			console.log("This will be overridden by leaderboard.js");
+			return Promise.resolve({success: false});
 		}
 	}
 };

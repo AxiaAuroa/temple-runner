@@ -113,7 +113,7 @@ Crafty.scene('startMenu', function() {
 			Crafty.background('#000000');
 			
 			// Leaderboard title
-			var leaderboardTitle = Crafty.e('2D, DOM, Text')
+			var leaderboardTitle = Crafty.e('CustomText')
 				.attr({x: 0, y: 50, w: Game.width})
 				.text('WEEKLY LEADERBOARD')
 				.textColor('#FFFFFF')
@@ -168,30 +168,25 @@ Crafty.scene('startMenu', function() {
 						.textFont({size: '18px', family: 'arcade'})
 						.textAlign('center');
 				} else {
-					// Header row
-					Crafty.e('2D, DOM, Text')
-						.attr({x: Game.width/2 - 150, y: 120, w: 300})
-						.text('RANK    PLAYER    SCORE')
-						.textColor('#AAAAAA')
-						.textFont({size: '16px', family: 'arcade'});
-					
-					// Leaderboard entries
+					// Display leaderboard entries
 					leaderboardData.forEach(function(entry, index) {
-						var yPos = 150 + (index * 25);
+						var yPos = 150 + (index * 30);
 						
 						// Rank
 						Crafty.e('2D, DOM, Text')
-							.attr({x: Game.width/2 - 150, y: yPos, w: 50})
-							.text(entry.rank)
+							.attr({x: Game.width/2 - 150, y: yPos, w: 30})
+							.text(entry.rank + '.')
 							.textColor('#FFFFFF')
-							.textFont({size: '16px', family: 'arcade'});
+							.textFont({size: '16px', family: 'arcade'})
+							.textAlign('right');
 						
 						// Name
 						Crafty.e('2D, DOM, Text')
-							.attr({x: Game.width/2 - 80, y: yPos, w: 150})
+							.attr({x: Game.width/2 - 110, y: yPos, w: 180})
 							.text(entry.name)
 							.textColor('#FFFFFF')
-							.textFont({size: '16px', family: 'arcade'});
+							.textFont({size: '16px', family: 'arcade'})
+							.textAlign('left');
 						
 						// Score
 						Crafty.e('2D, DOM, Text')

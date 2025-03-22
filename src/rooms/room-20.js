@@ -28,13 +28,12 @@ Crafty.scene('room-20', function() {
 	// ground
 	Crafty.e('Platform').place(0, Game.height-16).size(Game.width, 16);
 	
-	// Create a congratulations scene overlay
+	// Create completion overlay
 	var overlay = Crafty.e('2D, DOM, Color')
 		.attr({x: 0, y: 0, w: Game.width, h: Game.height, z: 900})
 		.color('#000000')
 		.css({opacity: 0.8});
 	
-	// Add congratulation text and score
 	var congratsText = Crafty.e('CustomText')
 		.text('CONGRATULATIONS!')
 		.place(0, 80)
@@ -43,8 +42,8 @@ Crafty.scene('room-20', function() {
 		.textAlign('center')
 		.attr({z: 901});
 	
-	var completedText = Crafty.e('CustomText')
-		.text('YOU&nbsp;&nbsp;COMPLETED&nbsp;&nbsp;ALL&nbsp;&nbsp;LEVELS!')
+	var completionText = Crafty.e('CustomText')
+		.text('YOU COMPLETED ALL LEVELS')
 		.place(0, 120)
 		.textFont({size: '20px'})
 		.textColor('#FFFFFF')
@@ -52,7 +51,7 @@ Crafty.scene('room-20', function() {
 		.attr({z: 901});
 	
 	var scoreText = Crafty.e('CustomText')
-		.text('YOUR&nbsp;&nbsp;SCORE:&nbsp;&nbsp;' + finalTime.toFixed(1))
+		.text('YOUR SCORE: ' + finalTime.toFixed(1))
 		.place(0, 160)
 		.textFont({size: '20px'})
 		.textColor('#FFFFFF')
@@ -61,14 +60,15 @@ Crafty.scene('room-20', function() {
 	
 	// Create in-game form for player information
 	var namePrompt = Crafty.e('CustomText')
-		.text('ENTER&nbsp;&nbsp;YOUR&nbsp;&nbsp;NAME:')
+		.text('ENTER YOUR NAME:')
 		.place(0, 200)
 		.textFont({size: '16px'})
 		.textColor('#FFFFFF')
 		.textAlign('center')
 		.attr({z: 901});
 	
-	// Name input field
+	// Name input field - styled as a game element
+	var playerName = "";
 	var nameField = Crafty.e('2D, DOM, Color, Text, Mouse')
 		.attr({x: Game.width/2 - 120, y: 230, w: 240, h: 30, z: 901})
 		.color('#355157')
@@ -77,29 +77,20 @@ Crafty.scene('room-20', function() {
 		.textColor('#FFFFFF')
 		.text('CLICK TO ENTER NAME')
 		.bind('Click', function() {
-			var currentName = this.text() === 'CLICK TO ENTER NAME' ? '' : this.text();
-			var playerName = prompt("Enter your name:", currentName);
-			if (playerName && playerName.trim() !== "") {
-				// Limit name length to 20 characters
-				playerName = playerName.trim().substring(0, 20);
-				this.text(playerName);
-			} else if (!playerName) {
-				// If canceled, keep previous value or default
-				if (currentName === '') {
-					this.text('CLICK TO ENTER NAME');
-				}
-			}
+			// Create in-game keyboard for name input
+			showInGameKeyboard('name', this);
 		});
 	
 	var walletPrompt = Crafty.e('CustomText')
-		.text('ENTER&nbsp;&nbsp;YOUR&nbsp;&nbsp;SOLANA&nbsp;&nbsp;WALLET:')
+		.text('ENTER YOUR SOLANA WALLET:')
 		.place(0, 270)
 		.textFont({size: '16px'})
 		.textColor('#FFFFFF')
 		.textAlign('center')
 		.attr({z: 901});
 	
-	// Wallet input field
+	// Wallet input field - styled as a game element
+	var playerWallet = "";
 	var walletField = Crafty.e('2D, DOM, Color, Text, Mouse')
 		.attr({x: Game.width/2 - 120, y: 300, w: 240, h: 30, z: 901})
 		.color('#355157')
@@ -108,23 +99,8 @@ Crafty.scene('room-20', function() {
 		.textColor('#FFFFFF')
 		.text('CLICK TO ENTER WALLET')
 		.bind('Click', function() {
-			var currentWallet = this.text() === 'CLICK TO ENTER WALLET' ? '' : this.text();
-			var walletAddress = prompt("Enter your Solana wallet address:", currentWallet);
-			if (walletAddress && walletAddress.trim() !== "") {
-				// Truncate if too long for display
-				var displayWallet = walletAddress.trim();
-				if (displayWallet.length > 24) {
-					displayWallet = displayWallet.substring(0, 10) + '...' + 
-						displayWallet.substring(displayWallet.length - 10);
-				}
-				this.text(displayWallet);
-				this.fullWallet = walletAddress.trim(); // Store full address
-			} else if (!walletAddress) {
-				// If canceled, keep previous value or default
-				if (currentWallet === '') {
-					this.text('CLICK TO ENTER WALLET');
-				}
-			}
+			// Create in-game keyboard for wallet input
+			showInGameKeyboard('wallet', this);
 		});
 	
 	// Submit button
@@ -136,14 +112,14 @@ Crafty.scene('room-20', function() {
 		.textColor('#FFFFFF')
 		.text('SUBMIT')
 		.bind('Click', function() {
-			var name = nameField.text();
-			var wallet = walletField.fullWallet || walletField.text();
+			var name = nameField._text === 'CLICK TO ENTER NAME' ? '' : nameField._text;
+			var wallet = walletField._text === 'CLICK TO ENTER WALLET' ? '' : walletField._text;
 			
 			// Validate inputs
-			if (name === 'CLICK TO ENTER NAME' || wallet === 'CLICK TO ENTER WALLET') {
+			if (name === '' || wallet === '') {
 				// Show error message
 				var errorMsg = Crafty.e('CustomText')
-					.text('PLEASE&nbsp;&nbsp;FILL&nbsp;&nbsp;ALL&nbsp;&nbsp;FIELDS')
+					.text('PLEASE FILL ALL FIELDS')
 					.place(0, 400)
 					.textFont({size: '16px'})
 					.textColor('#FF5555')
@@ -172,8 +148,8 @@ Crafty.scene('room-20', function() {
 						
 						var successMsg = Crafty.e('CustomText')
 							.text(result.madeLeaderboard ? 
-								'YOU&nbsp;&nbsp;MADE&nbsp;&nbsp;THE&nbsp;&nbsp;LEADERBOARD!' : 
-								'SCORE&nbsp;&nbsp;SAVED!')
+								'YOU MADE THE LEADERBOARD!' : 
+								'SCORE SAVED!')
 							.place(0, 400)
 							.textFont({size: '16px'})
 							.textColor('#55FF55')
@@ -185,13 +161,13 @@ Crafty.scene('room-20', function() {
 							menuButton.attr({y: 400});
 						}, 2000);
 					} else {
-						// Show error message and re-enable submit
+						// Re-enable submit button
 						submitButton.text('RETRY');
 						submitButton.color('#355157');
-						submitButton.bind('Click', submitButton._events.Click[0].fn);
+						submitButton.bind('Click', submitHandler);
 						
 						var errorMsg = Crafty.e('CustomText')
-							.text('SUBMISSION&nbsp;&nbsp;FAILED')
+							.text('SUBMISSION FAILED')
 							.place(0, 400)
 							.textFont({size: '16px'})
 							.textColor('#FF5555')
@@ -206,7 +182,7 @@ Crafty.scene('room-20', function() {
 				});
 		});
 	
-	// Main menu button
+	// Main menu button (initially hidden, shown after submission)
 	var menuButton = Crafty.e('2D, DOM, Color, Text, Mouse')
 		.attr({x: Game.width/2 - 60, y: 450, w: 120, h: 40, z: 901})
 		.color('#355157')
@@ -217,4 +193,149 @@ Crafty.scene('room-20', function() {
 		.bind('Click', function() {
 			Crafty.scene('startMenu');
 		});
+	
+	// Function to show in-game keyboard
+	function showInGameKeyboard(type, targetField) {
+		// Create keyboard overlay
+		var keyboardOverlay = Crafty.e('2D, DOM, Color')
+			.attr({x: 0, y: 0, w: Game.width, h: Game.height, z: 950})
+			.color('#000000')
+			.css({opacity: 0.9});
+		
+		var keyboardTitle = Crafty.e('CustomText')
+			.text(type === 'name' ? 'ENTER YOUR NAME' : 'ENTER YOUR WALLET')
+			.place(0, 50)
+			.textFont({size: '20px'})
+			.textColor('#FFFFFF')
+			.textAlign('center')
+			.attr({z: 951});
+		
+		// Current input display
+		var currentValue = targetField._text;
+		if (currentValue === 'CLICK TO ENTER NAME' || currentValue === 'CLICK TO ENTER WALLET') {
+			currentValue = '';
+		}
+		
+		var inputDisplay = Crafty.e('2D, DOM, Color, Text')
+			.attr({x: Game.width/2 - 200, y: 100, w: 400, h: 40, z: 951})
+			.color('#355157')
+			.css({'border': '2px solid #FFFFFF', 'text-align': 'center', 'padding-top': '10px'})
+			.textFont({size: '16px', family: 'arcade'})
+			.textColor('#FFFFFF')
+			.text(currentValue);
+		
+		// Create keyboard keys
+		var keys = [];
+		if (type === 'name') {
+			// Alphabet for name input
+			keys = [
+				'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
+				'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+				'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0',
+				'1', '2', '3', '4', '5', '6', '7', '8', '9'
+			];
+		} else {
+			// Alphanumeric for wallet input
+			keys = [
+				'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+				'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+				'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+				'U', 'V', 'W', 'X', 'Y', 'Z', '.', '_', '-', '@'
+			];
+		}
+		
+		// Create keyboard layout
+		var keySize = 40;
+		var keysPerRow = 10;
+		var startX = Game.width/2 - (keySize * keysPerRow)/2;
+		var startY = 160;
+		
+		keys.forEach(function(key, index) {
+			var row = Math.floor(index / keysPerRow);
+			var col = index % keysPerRow;
+			
+			Crafty.e('2D, DOM, Color, Text, Mouse')
+				.attr({
+					x: startX + col * keySize, 
+					y: startY + row * keySize, 
+					w: keySize - 4, 
+					h: keySize - 4, 
+					z: 951
+				})
+				.color('#355157')
+				.css({'border': '2px solid #FFFFFF', 'text-align': 'center', 'padding-top': '8px'})
+				.textFont({size: '16px', family: 'arcade'})
+				.textColor('#FFFFFF')
+				.text(key)
+				.bind('Click', function() {
+					// Add character to input
+					var newValue = inputDisplay._text + key;
+					
+					// Limit length based on input type
+					var maxLength = type === 'name' ? 20 : 44;
+					if (newValue.length <= maxLength) {
+						inputDisplay.text(newValue);
+					}
+				});
+		});
+		
+		// Special keys
+		// Backspace
+		Crafty.e('2D, DOM, Color, Text, Mouse')
+			.attr({x: startX, y: startY + 4 * keySize, w: keySize * 3 - 4, h: keySize - 4, z: 951})
+			.color('#355157')
+			.css({'border': '2px solid #FFFFFF', 'text-align': 'center', 'padding-top': '8px'})
+			.textFont({size: '16px', family: 'arcade'})
+			.textColor('#FFFFFF')
+			.text('BACK')
+			.bind('Click', function() {
+				var currentText = inputDisplay._text;
+				if (currentText.length > 0) {
+					inputDisplay.text(currentText.substring(0, currentText.length - 1));
+				}
+			});
+		
+		// Space (for name input only)
+		if (type === 'name') {
+			Crafty.e('2D, DOM, Color, Text, Mouse')
+				.attr({x: startX + 3 * keySize, y: startY + 4 * keySize, w: keySize * 4 - 4, h: keySize - 4, z: 951})
+				.color('#355157')
+				.css({'border': '2px solid #FFFFFF', 'text-align': 'center', 'padding-top': '8px'})
+				.textFont({size: '16px', family: 'arcade'})
+				.textColor('#FFFFFF')
+				.text('SPACE')
+				.bind('Click', function() {
+					var newValue = inputDisplay._text + ' ';
+					if (newValue.length <= 20) {
+						inputDisplay.text(newValue);
+					}
+				});
+		}
+		
+		// Done button
+		Crafty.e('2D, DOM, Color, Text, Mouse')
+			.attr({x: startX + 7 * keySize, y: startY + 4 * keySize, w: keySize * 3 - 4, h: keySize - 4, z: 951})
+			.color('#355157')
+			.css({'border': '2px solid #FFFFFF', 'text-align': 'center', 'padding-top': '8px'})
+			.textFont({size: '16px', family: 'arcade'})
+			.textColor('#FFFFFF')
+			.text('DONE')
+			.bind('Click', function() {
+				// Update the target field with the input value
+				var finalValue = inputDisplay._text.trim();
+				if (finalValue !== '') {
+					targetField.text(finalValue);
+				} else {
+					targetField.text(type === 'name' ? 'CLICK TO ENTER NAME' : 'CLICK TO ENTER WALLET');
+				}
+				
+				// Remove keyboard
+				keyboardOverlay.destroy();
+				keyboardTitle.destroy();
+				inputDisplay.destroy();
+				Crafty('2D, DOM, Color, Text, Mouse, z(951)').each(function() {
+					this.destroy();
+				});
+			});
+	}
 });
