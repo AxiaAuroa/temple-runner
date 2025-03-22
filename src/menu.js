@@ -136,6 +136,14 @@ Crafty.scene('startMenu', function() {
 				.textFont({size: '18px', family: 'arcade'})
 				.textAlign('center');
 			
+			// Back button
+			var backButton = Crafty.e('2D, DOM, Mouse, Image')
+				.attr({x: 20, y: 20, w: 40, h: 40, z: 1000})
+				.image('assets/images/ui/icon-back.png')
+				.bind('MouseDown', function() {
+					Crafty.scene('startMenu');
+				});
+			
 			// Load leaderboard data
 			Game.leaderboard.getTopScores(function(leaderboardData, resetTimeText) {
 				// Update reset time text
@@ -188,14 +196,6 @@ Crafty.scene('startMenu', function() {
 					});
 				}
 			});
-			
-			// Back button
-			var backButton = Crafty.e('2D, DOM, HTML, Mouse')
-				.attr({x: 20, y: 450, w: 100, h: 30, z: 1000})
-				.replace('<div style="display: flex; align-items: center; justify-content: center; background-color: #355157; color: white; border-radius: 4px; padding: 5px;"><img src="assets/images/icon-back.png" style="height: 20px; margin-right: 5px;"> BACK</div>')
-				.bind('MouseDown', function() {
-					Crafty.scene('startMenu');
-				});
 			
 			// Main menu button at bottom
 			var menuButton = Crafty.e('2D, DOM, Color, Text, Mouse')
