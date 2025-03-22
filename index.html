@@ -54,28 +54,36 @@
 				max-width: 120px;
 				overflow: hidden;
 				text-overflow: ellipsis;
+				white-space: nowrap;
 			}
 			.copy-btn {
 				background: none;
 				border: none;
 				cursor: pointer;
-				padding: 0;
-				display: flex;
-				align-items: center;
-				justify-content: center;
+				padding: 4px;
 			}
-			.copy-btn img {
+			.copy-btn svg {
 				width: 14px;
 				height: 14px;
-				opacity: 0.7;
-				transition: opacity 0.2s;
+				color: rgba(255, 255, 255, 0.7);
 			}
-			.copy-btn:hover img {
-				opacity: 1;
+			.copy-btn:hover svg {
+				color: white;
 			}
-			.copy-btn.copied img {
-				opacity: 1;
-				filter: brightness(1.5);
+			.telegram-link {
+				display: flex;
+				align-items: center;
+				gap: 4px;
+				color: rgba(255, 255, 255, 0.8);
+				text-decoration: none;
+				font-size: 12px;
+			}
+			.telegram-link:hover {
+				color: white;
+			}
+			.telegram-link svg {
+				width: 14px;
+				height: 14px;
 			}
 		</style>
 	</head>
@@ -121,9 +129,9 @@
 			</div>
 		</footer>
 		
+		<script type="text/javascript" src="src/time-attack.js"></script>
 		<script type="text/javascript" src="src/init.js"></script>
 		<script type="text/javascript" src="src/menu.js"></script>
-		<script type="text/javascript" src="src/time-attack.js"></script>
 		<script type="text/javascript" src="src/rooms/_shared.js"></script>
 		<script type="text/javascript" src="src/rooms/room-1.js"></script>
 		<script type="text/javascript" src="src/rooms/room-2.js"></script>
@@ -172,8 +180,6 @@
 				});
 			});
 		</script>
-		
-		<!-- Leaderboard functionality -->
 		<script type="text/javascript" src="leaderboard.js"></script>
 	</body>
 </html>
