@@ -54,84 +54,52 @@
 				max-width: 120px;
 				overflow: hidden;
 				text-overflow: ellipsis;
-				white-space: nowrap;
 			}
 			.copy-btn {
 				background: none;
 				border: none;
 				cursor: pointer;
-				padding: 4px;
-			}
-			.copy-btn svg {
-				width: 14px;
-				height: 14px;
-				color: rgba(255, 255, 255, 0.7);
-			}
-			.copy-btn:hover svg {
-				color: white;
-			}
-			.telegram-link {
+				padding: 0;
 				display: flex;
 				align-items: center;
-				gap: 4px;
-				color: rgba(255, 255, 255, 0.8);
-				text-decoration: none;
-				font-size: 12px;
+				justify-content: center;
 			}
-			.telegram-link:hover {
-				color: white;
-			}
-			.telegram-link svg {
+			.copy-btn img {
 				width: 14px;
 				height: 14px;
+				opacity: 0.7;
+				transition: opacity 0.2s;
+			}
+			.copy-btn:hover img {
+				opacity: 1;
+			}
+			.copy-btn.copied img {
+				opacity: 1;
+				filter: brightness(1.5);
 			}
 		</style>
 	</head>
 	<body>
 		<div id="game-wrapper">
-			<div id="ui-container">
-				<div class="ui-button restart"></div>
-				<div class="ui-button mute"></div>
-				<div class="ui-button unmute hidden"></div>
-				<div class="ui-button pause"></div>
-				<div class="ui-button unpause hidden"></div>
-			</div>
-			<div id="general-container">
-				<div id="game-container"></div>
+			<div id="game-container"></div>
+		</div>
+		
+		<div class="footer">
+			<div class="footer-content">
+				<img src="assets/images/ui/trench-logo.png" alt="Trench" class="trench-logo">
+				<div class="token-container">
+					<span class="token-text">$TRENCH:</span>
+					<span id="token-address" class="token-address">0x123...abc</span>
+					<button id="copy-btn" class="copy-btn">
+						<img src="assets/images/ui/copy-icon.png" alt="Copy">
+					</button>
+				</div>
 			</div>
 		</div>
 		
-		<footer class="footer">
-			<div class="footer-content">
-				<a href="https://trenchgaming.com" target="_blank" rel="noopener noreferrer">
-					<img class="trench-logo" alt="Trench Arcade" src="https://bfwiyxhgpabcobaphgrs.supabase.co/storage/v1/object/sign/assets/trenchgaming.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhc3NldHMvdHJlbmNoZ2FtaW5nLnBuZyIsImlhdCI6MTc0MTU5NDc0OSwiZXhwIjoxNzczMTMwNzQ5fQ.2pP-5AyW7Wbk8oG9KbwjwRSma6V7fBQnosP7iVxNQLs">
-				</a>
-				
-				<div class="token-container">
-					<span class="token-text">$TRENCH:</span>
-					<span class="token-address" id="token-address">CnzzKsMSRG3Et4X6L8bkxdXMUgoGJnKn6Gq6FrWNpump</span>
-					<button class="copy-btn" id="copy-btn">
-						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-							<rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
-							<path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
-						</svg>
-					</button>
-				</div>
-				
-				<a href="https://t.me/trencharcade" target="_blank" rel="noopener noreferrer" class="telegram-link">
-					<span>Telegram</span>
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-						<path d="M15 3h6v6"></path>
-						<path d="M10 14 21 3"></path>
-						<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-					</svg>
-				</a>
-			</div>
-		</footer>
-		
-		<script type="text/javascript" src="src/time-attack.js"></script>
 		<script type="text/javascript" src="src/init.js"></script>
 		<script type="text/javascript" src="src/menu.js"></script>
+		<script type="text/javascript" src="src/time-attack.js"></script>
 		<script type="text/javascript" src="src/rooms/_shared.js"></script>
 		<script type="text/javascript" src="src/rooms/room-1.js"></script>
 		<script type="text/javascript" src="src/rooms/room-2.js"></script>
@@ -181,12 +149,7 @@
 			});
 		</script>
 		
-		<!-- Firebase App (the core Firebase SDK) -->
-		<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-		<!-- Firestore -->
-		<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-		<!-- Your Firebase configuration -->
-		<script src="firebase-config.js"></script>
+		<!-- Leaderboard functionality -->
 		<script type="text/javascript" src="leaderboard.js"></script>
 	</body>
 </html>

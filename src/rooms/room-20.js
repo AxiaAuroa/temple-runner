@@ -58,7 +58,7 @@ Crafty.scene('room-20', function() {
 		.textAlign('center')
 		.attr({z: 901});
 	
-	// Create in-game form for player information
+	// Create in-game form for player information using DOM elements
 	var namePrompt = Crafty.e('CustomText')
 		.text('ENTER YOUR NAME:')
 		.place(0, 200)
@@ -67,7 +67,12 @@ Crafty.scene('room-20', function() {
 		.textAlign('center')
 		.attr({z: 901});
 	
-	// Create an HTML input element for name
+	// Create a DOM element for name input
+	var nameInputDiv = Crafty.e('2D, DOM, Color')
+		.attr({x: Game.width/2 - 120, y: 230, w: 240, h: 30, z: 901})
+		.color('rgba(53, 81, 87, 0.8)');
+	
+	// Create the HTML input element manually and add it to the DOM
 	var nameInputElement = document.createElement('input');
 	nameInputElement.type = 'text';
 	nameInputElement.maxLength = 20;
@@ -82,11 +87,11 @@ Crafty.scene('room-20', function() {
 	nameInputElement.style.fontFamily = 'arcade, monospace';
 	nameInputElement.style.fontSize = '16px';
 	nameInputElement.style.outline = 'none';
-	
-	// Create a Crafty wrapper for the input
-	var nameInput = Crafty.e('2D, DOM')
-		.attr({x: Game.width/2 - 120, y: 230, w: 240, h: 30, z: 901})
-		.append(nameInputElement);
+	nameInputElement.style.position = 'absolute';
+	nameInputElement.style.left = (Game.width/2 - 120) + 'px';
+	nameInputElement.style.top = '230px';
+	nameInputElement.style.zIndex = '901';
+	document.getElementById('game-container').appendChild(nameInputElement);
 	
 	var walletPrompt = Crafty.e('CustomText')
 		.text('ENTER YOUR SOLANA WALLET:')
@@ -96,11 +101,16 @@ Crafty.scene('room-20', function() {
 		.textAlign('center')
 		.attr({z: 901});
 	
-	// Create an HTML input element for wallet
+	// Create a DOM element for wallet input
+	var walletInputDiv = Crafty.e('2D, DOM, Color')
+		.attr({x: Game.width/2 - 120, y: 300, w: 240, h: 30, z: 901})
+		.color('rgba(53, 81, 87, 0.8)');
+	
+	// Create the HTML input element manually and add it to the DOM
 	var walletInputElement = document.createElement('input');
 	walletInputElement.type = 'text';
 	walletInputElement.maxLength = 44;
-	walletInputElement.placeholder = 'Your Solana Wallet Address (Optional)';
+	walletInputElement.placeholder = 'Your Solana Wallet Address';
 	walletInputElement.style.width = '240px';
 	walletInputElement.style.height = '30px';
 	walletInputElement.style.backgroundColor = 'rgba(53, 81, 87, 0.8)';
@@ -111,13 +121,13 @@ Crafty.scene('room-20', function() {
 	walletInputElement.style.fontFamily = 'arcade, monospace';
 	walletInputElement.style.fontSize = '16px';
 	walletInputElement.style.outline = 'none';
+	walletInputElement.style.position = 'absolute';
+	walletInputElement.style.left = (Game.width/2 - 120) + 'px';
+	walletInputElement.style.top = '300px';
+	walletInputElement.style.zIndex = '901';
+	document.getElementById('game-container').appendChild(walletInputElement);
 	
-	// Create a Crafty wrapper for the input
-	var walletInput = Crafty.e('2D, DOM')
-		.attr({x: Game.width/2 - 120, y: 300, w: 240, h: 30, z: 901})
-		.append(walletInputElement);
-	
-	// Status message for feedback
+	// Status message
 	var statusMessage = Crafty.e('CustomText')
 		.text('')
 		.place(0, 340)
@@ -171,25 +181,51 @@ Crafty.scene('room-20', function() {
 			showStatus('SUBMITTING...', '#FFFFFF');
 			
 			// Submit score to leaderboard
-			Game.leaderboard.saveScore(name, wallet, finalTime)
-				.then(function(result) {
-					if (result.success) {
-						showStatus('SCORE SAVED SUCCESSFULLY!', '#55FF55');
-						
-						// Return to main menu after a delay
-						setTimeout(function() {
-							Crafty.scene('startMenu');
-						}, 3000);
-					} else {
-						showStatus('FAILED TO SAVE SCORE', '#FF5555');
+			if (typeof Game.leaderboard.saveScore === 'function') {
+				Game.leaderboard.saveScore(name, wallet, finalTime)
+					.then(function(result) {
+						if (result.success) {
+							showStatus('SCORE SAVED SUCCESSFULLY!', '#55FF55');
+							
+							// Return to main menu after a delay
+							setTimeout(function() {
+								// Clean up DOM elements
+								document.getElementById('game-container').removeChild(nameInputElement);
+								document.getElementById('game-container').removeChild(walletInputElement);
+								Crafty.scene('startMenu');
+							}, 3000);
+						} else {
+							showStatus('FAILED TO SAVE SCORE', '#FF5555');
+							
+							// Re-enable inputs and button
+							nameInputElement.disabled = false;
+							walletInputElement.disabled = false;
+							submitButton.bind('Click', submitScore);
+							submitButton.css({'cursor': 'pointer', 'opacity': '1'});
+						}
+					})
+					.catch(function(error) {
+						console.error("Error saving score:", error);
+						showStatus('ERROR SAVING SCORE', '#FF5555');
 						
 						// Re-enable inputs and button
 						nameInputElement.disabled = false;
 						walletInputElement.disabled = false;
 						submitButton.bind('Click', submitScore);
 						submitButton.css({'cursor': 'pointer', 'opacity': '1'});
-					}
-				});
+					});
+			} else {
+				// Fallback if leaderboard API is not available
+				showStatus('LEADERBOARD NOT AVAILABLE', '#FFFF55');
+				
+				// Return to main menu after a delay
+				setTimeout(function() {
+					// Clean up DOM elements
+					document.getElementById('game-container').removeChild(nameInputElement);
+					document.getElementById('game-container').removeChild(walletInputElement);
+					Crafty.scene('startMenu');
+				}, 3000);
+			}
 		});
 	
 	// Skip button (for testing or if player doesn't want to submit)
@@ -213,8 +249,22 @@ Crafty.scene('room-20', function() {
 			this.color('rgba(40, 40, 40, 0.8)');
 		})
 		.bind('Click', function() {
+			// Clean up DOM elements
+			document.getElementById('game-container').removeChild(nameInputElement);
+			document.getElementById('game-container').removeChild(walletInputElement);
 			Crafty.scene('startMenu');
 		});
+	
+	// Clean up function when leaving the scene
+	this.bind('SceneDestroy', function() {
+		// Remove DOM elements if they still exist
+		if (document.contains(nameInputElement)) {
+			document.getElementById('game-container').removeChild(nameInputElement);
+		}
+		if (document.contains(walletInputElement)) {
+			document.getElementById('game-container').removeChild(walletInputElement);
+		}
+	});
 	
 	// Helper function to show status messages
 	function showStatus(message, color) {
