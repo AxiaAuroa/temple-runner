@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<meta name="description" content="Temple Runner - A challenging platformer game">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Temple Runner</title>
+		<link rel="icon" href="assets/images/ui/favicon.ico">
+		<link rel="stylesheet" type="text/css" href="assets/css/main.css">
+		<script type="text/javascript" src="lib/crafty/crafty-min.js"></script>
+		<style>
+			body {
+				display: flex;
+				flex-direction: column;
+				min-height: 100vh;
+				margin: 0;
+				padding: 0;
+			}
+			#game-wrapper {
+				flex: 1;
+			}
+			.footer {
+				background-color: rgba(0, 0, 0, 0.8);
+				backdrop-filter: blur(8px);
+				border-top: 1px solid rgba(255, 255, 255, 0.1);
+				padding: 8px 16px;
+				position: fixed;
+				bottom: 0;
+				width: 100%;
+				box-sizing: border-box;
+			}
+			.footer-content {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				max-width: 1200px;
+				margin: 0 auto;
+			}
+			.trench-logo {
+				height: 24px;
+			}
+			.token-container {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+			}
+			.token-text {
+				font-size: 12px;
+				color: rgba(255, 255, 255, 0.8);
+			}
+			.token-address {
+				font-size: 12px;
+				color: rgba(255, 255, 255, 0.7);
+				max-width: 120px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+			.copy-btn {
+				background: none;
+				border: none;
+				cursor: pointer;
+				padding: 4px;
+			}
+			.copy-btn svg {
+				width: 14px;
+				height: 14px;
+				color: rgba(255, 255, 255, 0.7);
+			}
+			.copy-btn:hover svg {
+				color: white;
+			}
+			.telegram-link {
+				display: flex;
+				align-items: center;
+				gap: 4px;
+				color: rgba(255, 255, 255, 0.8);
+				text-decoration: none;
+				font-size: 12px;
+			}
+			.telegram-link:hover {
+				color: white;
+			}
+			.telegram-link svg {
+				width: 14px;
+				height: 14px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="game-wrapper">
+			<div id="ui-container">
+				<div class="ui-button restart"></div>
+				<div class="ui-button mute"></div>
+				<div class="ui-button unmute hidden"></div>
+				<div class="ui-button pause"></div>
+				<div class="ui-button unpause hidden"></div>
+			</div>
+			<div id="general-container">
+				<div id="game-container"></div>
+			</div>
+		</div>
+		
+		<footer class="footer">
+			<div class="footer-content">
+				<a href="https://trenchgaming.com" target="_blank" rel="noopener noreferrer">
+					<img class="trench-logo" alt="Trench Arcade" src="https://bfwiyxhgpabcobaphgrs.supabase.co/storage/v1/object/sign/assets/trenchgaming.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhc3NldHMvdHJlbmNoZ2FtaW5nLnBuZyIsImlhdCI6MTc0MTU5NDc0OSwiZXhwIjoxNzczMTMwNzQ5fQ.2pP-5AyW7Wbk8oG9KbwjwRSma6V7fBQnosP7iVxNQLs">
+				</a>
+				
+				<div class="token-container">
+					<span class="token-text">$TRENCH:</span>
+					<span class="token-address" id="token-address">CnzzKsMSRG3Et4X6L8bkxdXMUgoGJnKn6Gq6FrWNpump</span>
+					<button class="copy-btn" id="copy-btn">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
+							<path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
+						</svg>
+					</button>
+				</div>
+				
+				<a href="https://t.me/trencharcade" target="_blank" rel="noopener noreferrer" class="telegram-link">
+					<span>Telegram</span>
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M15 3h6v6"></path>
+						<path d="M10 14 21 3"></path>
+						<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+					</svg>
+				</a>
+			</div>
+		</footer>
+		
+		<script type="text/javascript" src="src/time-attack.js"></script>
+		<script type="text/javascript" src="src/init.js"></script>
+		<script type="text/javascript" src="src/menu.js"></script>
+		<script type="text/javascript" src="src/rooms/_shared.js"></script>
+		<script type="text/javascript" src="src/rooms/room-1.js"></script>
+		<script type="text/javascript" src="src/rooms/room-2.js"></script>
+		<script type="text/javascript" src="src/rooms/room-3.js"></script>
+		<script type="text/javascript" src="src/rooms/room-4.js"></script>
+		<script type="text/javascript" src="src/rooms/room-5.js"></script>
+		<script type="text/javascript" src="src/rooms/room-6.js"></script>
+		<script type="text/javascript" src="src/rooms/room-7.js"></script>
+		<script type="text/javascript" src="src/rooms/room-8.js"></script>
+		<script type="text/javascript" src="src/rooms/room-9.js"></script>
+		<script type="text/javascript" src="src/rooms/room-10.js"></script>
+		<script type="text/javascript" src="src/rooms/room-11.js"></script>
+		<script type="text/javascript" src="src/rooms/room-12.js"></script>
+		<script type="text/javascript" src="src/rooms/room-13.js"></script>
+		<script type="text/javascript" src="src/rooms/room-14.js"></script>
+		<script type="text/javascript" src="src/rooms/room-15.js"></script>
+		<script type="text/javascript" src="src/rooms/room-16.js"></script>
+		<script type="text/javascript" src="src/rooms/room-17.js"></script>
+		<script type="text/javascript" src="src/rooms/room-18.js"></script>
+		<script type="text/javascript" src="src/rooms/room-19.js"></script>
+		<script type="text/javascript" src="src/rooms/room-20.js"></script>
+		<script type="text/javascript" src="src/components/player.js"></script>
+		<script type="text/javascript" src="src/components/custom-text.js"></script>
+		<script type="text/javascript" src="src/components/floating-message.js"></script>
+		<script type="text/javascript" src="src/components/platform.js"></script>
+		<script type="text/javascript" src="src/components/trap.js"></script>
+		<script type="text/javascript" src="src/components/loot.js"></script>
+		<script type="text/javascript" src="src/components/key.js"></script>
+		<script type="text/javascript" src="src/components/action-box.js"></script>
+		<script type="text/javascript" src="src/components/door.js"></script>
+		
+		<!-- Add clipboard functionality for the token copy button -->
+		<script>
+			document.addEventListener('DOMContentLoaded', function() {
+				const copyButton = document.getElementById('copy-btn');
+				const tokenText = document.getElementById('token-address').textContent;
+				
+				copyButton.addEventListener('click', function() {
+					navigator.clipboard.writeText(tokenText).then(function() {
+						// Show a small tooltip or flash effect to indicate successful copy
+						copyButton.classList.add('copied');
+						setTimeout(function() {
+							copyButton.classList.remove('copied');
+						}, 1500);
+					});
+				});
+			});
+		</script>
+		
+		<!-- Firebase App (the core Firebase SDK) -->
+		<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+		<!-- Firestore -->
+		<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+		<!-- Your Firebase configuration -->
+		<script src="firebase-config.js"></script>
+		<script type="text/javascript" src="leaderboard.js"></script>
+	</body>
+</html>

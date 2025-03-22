@@ -1,0 +1,311 @@
+/********************************
+main.css : CSS for the game page
+*********************************/
+
+/* font : arcade classic */
+@font-face {
+    font-family: 'arcade';
+    src: url('../fonts/arcadeclassic.regular.ttf') format('ttf'),
+		 url('../fonts/arcadeclassic.regular.woff') format('woff'),
+         url('../fonts/arcadeclassic.regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* font : Open Sans Regular */
+@font-face {
+    font-family: 'Open Sans Regular';
+    src: url('../fonts/opensans-regular-webfont.woff') format('woff'),
+         url('../fonts/opensans-regular-webfont.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+}
+
+body, html { 
+	margin: 0; 
+	padding: 0; 
+	overflow: hidden; 
+	background-color: #131313;
+}
+
+/* centered container */
+#general-container {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin: auto;
+}
+
+/* where the game will be injected by Crafty */
+#game-container { 
+	background-color: black;
+}
+
+/* when the game is paused */
+#game-container.pause {
+	opacity: 0.5;
+}
+
+/* top page user interface buttons */
+#ui-container {
+	float: left;
+	padding: 5px;
+}
+
+#ui-container .ui-button {
+	height: 30px;
+	width: 30px;
+	float: left;
+	pointer-events: initial;
+	cursor: pointer;
+	background-position: center;
+}
+
+.ui-button.hidden {
+	display: none;
+}
+
+/* back button */
+.ui-button.back {
+	background-image: url(../images/ui/icon-back.png);
+}
+
+/* restart button */
+.ui-button.restart {
+	background-image: url(../images/ui/icon-restart.png);
+}
+
+/* mute button */
+.ui-button.mute {
+	background-image: url(../images/ui/icon-mute.png);
+}
+
+/* unmute button */
+.ui-button.unmute {
+	background-image: url(../images/ui/icon-unmute.png);
+}
+
+/* pause button */
+.ui-button.pause {
+	background-image: url(../images/ui/icon-pause.png);
+}
+
+/* unpause button */
+.ui-button.unpause {
+	background-image: url(../images/ui/icon-unpause.png);
+}
+
+/* Footer styles */
+.py-3 {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.bg-black\/80 {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.backdrop-blur-md {
+  backdrop-filter: blur(12px);
+}
+
+.border-b {
+  border-bottom-width: 1px;
+}
+
+.border-white\/10 {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.w-full {
+  width: 100%;
+}
+
+.z-\[1000\] {
+  z-index: 1000;
+}
+
+.mt-auto {
+  margin-top: auto;
+}
+
+.container {
+  width: 100%;
+}
+
+.max-w-7xl {
+  max-width: 80rem;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.pl-0 {
+  padding-left: 0;
+}
+
+.self-start {
+  align-self: flex-start;
+}
+
+.text-xs {
+  font-size: 0.75rem;
+}
+
+.text-white\/70 {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.text-white\/80 {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.transition-transform {
+  transition-property: transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.hover\:scale-105:hover {
+  transform: scale(1.05);
+}
+
+.h-10 {
+  height: 2.5rem;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.max-w-\[120px\] {
+  max-width: 120px;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.inline-flex {
+  display: inline-flex;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.whitespace-nowrap {
+  white-space: nowrap;
+}
+
+.rounded-md {
+  border-radius: 0.375rem;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.transition-colors {
+  transition-property: color, background-color, border-color;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.h-6 {
+  height: 1.5rem;
+}
+
+.w-6 {
+  width: 1.5rem;
+}
+
+.hover\:text-white:hover {
+  color: rgba(255, 255, 255, 1);
+}
+
+.hover\:bg-accent:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Copy button animation */
+.copied::after {
+  content: "Copied!";
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  opacity: 0;
+  animation: fadeInOut 1.5s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Media queries for responsive design */
+@media (min-width: 768px) {
+  .md\:flex-row {
+    flex-direction: row;
+  }
+  
+  .md\:text-sm {
+    font-size: 0.875rem;
+  }
+  
+  .md\:max-w-\[180px\] {
+    max-width: 180px;
+  }
+}
