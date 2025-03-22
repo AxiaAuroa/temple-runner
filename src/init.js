@@ -245,29 +245,6 @@ window.onload = function() {
 		}
 	});
 	
-	// Add secret developer shortcut to skip to room 20
-	// Only you will know this combination (Alt + :)
-	document.addEventListener('keydown', function(e) {
-		// Check for Alt + : (Alt + Shift + ;)
-		if (e.altKey && e.key === ':') {
-			console.log("Developer shortcut activated: Skipping to room 20");
-			
-			// Stop any existing timers if in time attack mode
-			if (Game.mode === 'timeAttack' && Game.timeAttack) {
-				Game.timeAttack.stop();
-				// Reset timer to a reasonable testing value
-				Game.timeAttack.timer = 120.5;
-				Game.timeAttack.start();
-			}
-			
-			// Skip to room 20
-			Crafty.scene('room-20');
-			
-			// Prevent default browser behavior
-			e.preventDefault();
-		}
-	});
-	
 	// game loading scene
 	Crafty.scene('loading', function() {
 		
