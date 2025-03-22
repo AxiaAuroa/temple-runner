@@ -215,4 +215,43 @@ Crafty.scene('startMenu', function() {
 		Crafty.scene('leaderboard');
 	}
 	
+	// When leaderboard is clicked, show a simple "coming soon" message
+	leaderboardTitle.bind('Click', function() {
+		// Create a simple overlay with a message
+		Crafty.scene('leaderboardPlaceholder', function() {
+			// Background
+			Crafty.background('#000000');
+			
+			// Leaderboard title
+			var title = Crafty.e('CustomText')
+				.attr({x: 0, y: 100, w: Game.width})
+				.text('LEADERBOARD')
+				.textColor('#FFFFFF')
+				.textFont({size: '24px', family: 'arcade'})
+				.textAlign('center');
+				
+			// Coming soon message
+			var message = Crafty.e('CustomText')
+				.attr({x: 0, y: 200, w: Game.width})
+				.text('COMING SOON!')
+				.textColor('#FFFF55')
+				.textFont({size: '20px', family: 'arcade'})
+				.textAlign('center');
+			
+			// Back button
+			var backButton = Crafty.e('2D, DOM, Color, Text, Mouse')
+				.attr({x: Game.width/2 - 60, y: 300, w: 120, h: 40})
+				.color('#355157')
+				.text('BACK')
+				.textColor('#FFFFFF')
+				.textFont({size: '16px', family: 'arcade'})
+				.css({'text-align': 'center', 'padding-top': '10px', 'cursor': 'pointer'})
+				.bind('MouseDown', function() {
+					Crafty.scene('startMenu');
+				});
+		});
+		
+		Crafty.scene('leaderboardPlaceholder');
+	});
+	
 });

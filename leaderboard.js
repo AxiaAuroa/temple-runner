@@ -1,58 +1,26 @@
-// leaderboard.js - Netlify version
-// Extend the existing Game object
+// leaderboard.js - Placeholder for future implementation
+// This file will be replaced with actual implementation by your friend
 
-// Check if Game object exists
+// Simple placeholder that doesn't cause errors
 if (typeof Game !== 'undefined') {
-  // Extend the Game.leaderboard object with our methods
+  // Basic placeholder functions that don't do anything but don't break the game
   Game.leaderboard = {
-    // Save a score to the leaderboard
+    // Placeholder for saving scores
     saveScore: function(playerName, wallet, score) {
-      console.log("Saving score:", playerName, wallet, score);
-      
-      return fetch('/api/leaderboard', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name: playerName,
-          wallet: wallet,
-          score: score
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log("Score saved response:", data);
-        return {
-          success: !data.error,
-          madeLeaderboard: data.madeLeaderboard || false,
-          message: data.message || ""
-        };
-      })
-      .catch(error => {
-        console.error("Error saving score:", error);
-        return {
-          success: false,
-          madeLeaderboard: false,
-          message: "Error saving score"
-        };
+      console.log("Score saving will be implemented later:", playerName, wallet, score);
+      return Promise.resolve({
+        success: true,
+        message: "Leaderboard functionality coming soon"
       });
     },
     
-    // Get top scores for the leaderboard
+    // Placeholder for getting scores
     getTopScores: function(callback) {
-      console.log("Getting top scores");
-      
-      fetch('/api/leaderboard')
-        .then(response => response.json())
-        .then(data => {
-          console.log("Leaderboard data:", data);
-          callback(data.leaderboard || [], data.resetTime || "");
-        })
-        .catch(error => {
-          console.error("Error getting leaderboard:", error);
-          callback([], "");
-        });
+      console.log("Leaderboard retrieval will be implemented later");
+      // Return empty leaderboard with a message
+      callback([
+        {rank: 1, name: "Coming Soon", score: "---"}
+      ], "Weekly");
     }
   };
 }

@@ -3,10 +3,10 @@
     "version": "1.0.0",
     "description": "Temple Runner - A challenging platformer game",
     "main": "index.html",
-    "dependencies": {
-        "mongodb": "^4.17.2"
-    },
     "scripts": {
-        "dev": "netlify dev"
+        "dev": "http-server"
+    },
+    "devDependencies": {
+        "http-server": "^14.1.1"
     }
 }

@@ -18,26 +18,20 @@ var Game = {
 	// time attack mode
 	// see time-attack.js
 	timeAttack: timeAttackMode(),
-	// Leaderboard functionality with database integration
+	// Simple placeholder for leaderboard functionality
+	// Will be replaced with actual implementation later
 	leaderboard: {
-		apiUrl: '/api/leaderboard', // This will be redirected to our Netlify function
-		
-		// These functions will be overridden by the ones in leaderboard.js
-		getTopScores: function(callback) {
-			setTimeout(function() {
-				callback([], "LOADING...");
-			}, 100);
-		},
-		
-		checkQualification: function(score, callback) {
-			setTimeout(function() {
-				callback(true);
-			}, 100);
-		},
-		
+		// Placeholder for saving scores
 		saveScore: function(username, wallet, score) {
-			console.log("This will be overridden by leaderboard.js");
-			return Promise.resolve({success: false});
+			console.log("Score saving will be implemented later:", username, wallet, score);
+			return true;
+		},
+		
+		// Placeholder for getting scores
+		getTopScores: function(callback) {
+			console.log("Leaderboard retrieval will be implemented later");
+			// Return empty leaderboard with a message
+			callback([], "COMING SOON");
 		}
 	}
 };
@@ -138,232 +132,31 @@ window.onload = function() {
 	// properties are also changed in other files
 	if(Crafty.mobile){
 		Game.mobile = true;
-		Game.stageWidth *= Game.mobileScale; 
-		Game.stageHeight *= Game.mobileScale;
-		// gap added by mobile version
-		// used for reajusting some entities position
-		Game.mobileGap = -40;
-		// mobile version setup, called in every scene
-		Game.mobileVersion = function(){
-			// enable touch events handling
-			Crafty.multitouch(true);
-			// change game scale on mobile (smaller)
-			Crafty.viewport.scale(Game.mobileScale);
-		};
-		// audio makes game buggy on mobile iOS
-		// remove audio from assets before loading
-		if(iOS){
-			delete assetsObj.audio;
-		}
+		Game.stageWidth = window.innerWidth;
+		Game.stageHeight = window.innerHeight;
 	}
 	
-	// centered wrapper containing the game div
-	// dimensioned to fit game width and height
-	var generalContainer = document.getElementById('general-container');
-	generalContainer.style.width = Game.stageWidth + 'px';
-	generalContainer.style.height = Game.stageHeight  + 'px';
-	
-	// game initialization with stage setup
-	Crafty.init(Game.stageWidth, Game.stageHeight, Game.container);
-	
-	// game UI functions : pause, restart, mute...
-	// bound to the top page buttons onclick and ontouch
-	var buttonRestart = document.querySelector('.ui-button.restart');
-	var buttonMute = document.querySelector('.ui-button.mute');
-	var buttonUnmute = document.querySelector('.ui-button.unmute');
-	var buttonPause = document.querySelector('.ui-button.pause');
-	var buttonUnpause = document.querySelector('.ui-button.unpause');
-	
-	// restart the game : reload the page
-	function restart(){
-		location.reload();
-	}
-	
-	// mute audio
-	function mute(){
-		buttonMute.classList.add('hidden');
-		buttonUnmute.classList.remove('hidden');
-		if(!iOS){
-			Crafty.audio.mute();
-		}
-	}
-	
-	// unmute audio
-	function unmute(){
-		buttonUnmute.classList.add('hidden');
-		buttonMute.classList.remove('hidden');
-		if(!iOS){
-			Crafty.audio.unmute();
-		}
-	}
-	
-	// pause game and audio
-	function pause(){
-		buttonPause.classList.add('hidden');
-		buttonUnpause.classList.remove('hidden');
-		Game.container.classList.add('pause');
-		Crafty.pause();
-		if(!iOS){
-			for(var audio in assetsObj.audio){
-				Crafty.audio.pause(audio);
-			}
-		}
-	}
-	
-	// unpause game and audio
-	function unpause(){
-		buttonUnpause.classList.add('hidden');
-		buttonPause.classList.remove('hidden');
-		Game.container.classList.remove('pause');
-		Crafty.pause();
-		if(!iOS){
-			for(var audio in assetsObj.audio){
-				Crafty.audio.unpause(audio);
-			}
-		}
-	}
-
-	buttonRestart.onclick = restart;
-	buttonMute.onclick = mute;
-	buttonUnmute.onclick = unmute;
-	buttonPause.onclick = pause;
-	buttonUnpause.onclick = unpause;
-
-	// keyboard shortcuts
-	Crafty.bind('KeyUp', function(e) {
-		// refresh page with F5
-		if(e.key == Crafty.keys.F5){
-			restart();
-		}
-		// pause game with P
-		if(e.key == Crafty.keys.P){
-			if(Crafty.isPaused()){
-				unpause();
-			} else {
-				pause();
-			}
-		}
-	});
-	
-	// game loading scene
-	Crafty.scene('loading', function() {
-		
-		// show loading message
-		var customLoadingMessage = Crafty.e('CustomText').setLoading();
-		var loadingText = customLoadingMessage.text();
-		
-		// load all the assets for the game
-		Crafty.load(assetsObj, function() { // when loaded
+	// Add secret developer shortcut to skip to room 20
+	// Only you will know this combination (Alt + :)
+	document.addEventListener('keydown', function(e) {
+		// Check for Alt + : (Alt + Shift + ;)
+		if (e.altKey && e.key === ':') {
+			console.log("Developer shortcut activated: Skipping to room 20");
 			
-			if(!loadError){
-				
-				Crafty.e('Delay').delay(function(){
-					
-					// delete loading message
-					customLoadingMessage.destroy();
-					
-					// show play button
-					var playButton = Crafty.e('2D, DOM, Mouse').attr({w: 75, h: 75})
-					.css({
-						'background':'url(assets/images/ui/play.png) no-repeat center #131313',
-						'border-radius':'5px'
-					})
-					.bind('MouseOver', function(e){ 
-						if(!Crafty.isPaused()){
-							this.css({'background-color':'#202020'}); 
-						}
-					})
-					.bind('MouseOut', function(e){ 
-						if(!Crafty.isPaused()){
-							this.css({'background-color':'#131313'}); 
-						}
-					});
-					
-					// place the play button at the center
-					playButton.attr({x: Game.stageWidth/2 - playButton.w/2, y: Game.stageHeight/2 - playButton.h/2});
-					
-					// start the game when pressing enter
-					playButton.bind('KeyUp', function(e) {
-						if(!Crafty.isPaused()){
-							if(Player.keys.keyAction.indexOf(e.key) != -1) {
-								play();
-							}
-						}
-					});
-					
-					// start the game when clicking on play button
-					playButton.bind('Click', function() {
-						if(!Crafty.isPaused()){
-							play();
-						}
-					});
-				
-					// start the game
-					var play = function(){
-						// used to prevent pause before starting the game
-						Game.started = true;
-						// destroy play button
-						playButton.destroy();
-						
-						if(!iOS){
-							// audio properties
-							// main audio starts automatically
-							Game.audio = {
-								// store the audio object playing
-								// will be used in fadeOut function
-								main: Crafty.audio.play('main', -1, 1),
-								// fade out the sound from an audio object
-								// a callback function can be called when finished
-								fadeOut: function(audio, callback){
-									Crafty.e('Delay').delay(function(){
-										if(audio.volume > 0){
-											audio.volume -= 0.1;
-										}
-									},350, audio.volume*9, function(){
-										if(typeof callback == 'function') callback();
-										this.destroy();
-									});
-								}
-							};
-						}
-						
-						// alert if mobile device
-						// Mobile version not available.
-						if(Game.mobile){
-							Crafty.e('2D, DOM, Text, Persist').attr({x: 0, y: 20, w: Game.width, h: 30})
-							.text('Mobile version not available.').textAlign('center')
-							.textColor('red').textFont({family: 'Open Sans Regular', size: '30px'});
-						}
-							
-						// background image
-						if(Game.mobile){
-							Crafty.background('url(assets/images/menu/background-mobile.png)');
-						} else {
-							Crafty.background('url(assets/images/menu/background.png)');
-						}
-						
-						// launch the start menu scene
-						Crafty.e('Delay').delay(function(){ 
-							Crafty.scene('startMenu'); 
-						}, 1000, 0);
-					};
-				
-				},1000);
+			// Stop any existing timers if in time attack mode
+			if (Game.mode === 'timeAttack' && Game.timeAttack) {
+				Game.timeAttack.stop();
+				// Reset timer to a reasonable testing value
+				Game.timeAttack.timer = 120.5;
+				Game.timeAttack.start();
 			}
 			
-		}, function(loadingProperties){ // when loading
+			// Skip to room 20
+			Crafty.scene('room-20');
 			
-			// show loading percentage
-			customLoadingMessage.text(loadingText + '&nbsp;&nbsp;&nbsp;' + Math.round(loadingProperties.percent) + '%');
-			
-		}, function(){ // when loading fails
-			
-			// show loading error message
-			customLoadingMessage.text('LOADING &nbsp;&nbsp;ERROR, &nbsp;PLEASE &nbsp;&nbsp;REFRESH');
-			loadError = true;
-			
-		});
-		  
+			// Prevent default browser behavior
+			e.preventDefault();
+		}
 	});
 	
 	// launch the game loading scene
@@ -371,83 +164,36 @@ window.onload = function() {
 	
 };
 
-// get user browser
-// will be used to adjust a few displays
-// see : https://stackoverflow.com/a/9851769
-var userBrowser = {
-	// Opera 8.0+
-	isOpera: (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0,
-	// Firefox 1.0+
-	isFirefox: typeof InstallTrigger !== 'undefined',
-	// Safari 3.0+ '[object HTMLElementConstructor]' 
-	isSafari: /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === '[object SafariRemoteNotification]'; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification)),
-	// Internet Explorer 6-11
-	isIE: /*@cc_on!@*/false || !!document.documentMode,
-	// Edge 20+
-	isEdge: !this.isIE && !!window.StyleMedia,
-	// Chrome 1 - 79
-	isChrome: !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime)
-};
-
-// know if mobile iOS
-var iOS = [
-    'iPad Simulator',
-    'iPhone Simulator',
-    'iPod Simulator',
-    'iPad',
-    'iPhone',
-    'iPod'
-  ].includes(navigator.platform)
-  // iPad on iOS 13 detection
-  || (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
-
-// Add this function to init.js
-function gameOver(score) {
-    // Display game over screen
-    console.log("Game completed! Final score:", score);
-    
-    // Prompt for player name
-    var playerName = prompt("Congratulations on completing all levels! Enter your name for the leaderboard:", "Player");
-    
-    if (playerName && playerName.trim() !== "") {
-        // Limit name length
-        playerName = playerName.trim().substring(0, 20);
-        
-        // Save score to leaderboard
-        Game.leaderboard.saveScore(playerName, score).then(success => {
-            if (success) {
-                console.log("Score saved successfully");
-                // Show success message
-                Crafty.e("FloatingMessage").floatingMessage("Score saved to leaderboard!");
-            } else {
-                console.error("Failed to save score");
-                // Show error message
-                Crafty.e("FloatingMessage").floatingMessage("Failed to save score");
-            }
-        });
-    }
-    
-    // Return to main menu after a delay
-    setTimeout(function() {
-        Crafty.scene('startMenu');
-    }, 3000);
-}
-
-// Now we need to modify the code that handles level completion
-// This should be called when the player completes level 20
-Game.completeLevel = function(roomNumber, score) {
-    console.log("Level " + roomNumber + " completed with score: " + score);
-    
-    // Check if this was the final level (room 20)
-    if (roomNumber === 20) {
-        // Player has completed all levels, trigger game over
-        gameOver(score);
-    } else {
-        // Not the final level, proceed to next level
-        var nextRoom = roomNumber + 1;
-        console.log("Proceeding to room " + nextRoom);
-        
-        // Load the next room (you might already have this code)
-        Crafty.scene('room-' + nextRoom);
-    }
-};
+// loading scene
+// launched at the beginning of the game
+Crafty.scene('loading', function() {
+	
+	// loading text
+	var loadingText = Crafty.e('2D, DOM, Text')
+	.attr({w: 500, h: 20, x: Game.width/2-250, y: Game.height/2-10})
+	.text('LOADING...')
+	.textAlign('center')
+	.textColor('#FFFFFF')
+	.textFont({size: '20px', family: 'arcade'});
+	
+	// preload assets
+	Crafty.load(assetsObj, 
+		// when loaded
+		function() {
+			// wait a little
+			setTimeout(function() {
+				// launch the start menu
+				Crafty.scene('startMenu');
+			}, 1000);
+		},
+		// progress
+		function(e) {
+		},
+		// on error
+		function(e) {
+			loadError = true;
+			console.log(e);
+		}
+	);
+	
+});
