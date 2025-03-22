@@ -158,6 +158,13 @@ Crafty.scene('startMenu', function() {
 						.attr({x: 0, y: 200, w: Game.width})
 						.text('NO SCORES YET')
 						.textColor('#FFFFFF')
+						.textFont({size: '24px', family: 'arcade'})
+						.textAlign('center');
+						
+					Crafty.e('2D, DOM, Text')
+						.attr({x: 0, y: 240, w: Game.width})
+						.text('BE THE FIRST TO PLAY!')
+						.textColor('#FFFFFF')
 						.textFont({size: '18px', family: 'arcade'})
 						.textAlign('center');
 				} else {

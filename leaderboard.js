@@ -3,7 +3,7 @@ const Game = Game || {};
 
 Game.leaderboard = {
   // Save a score to the leaderboard
-  saveScore: function(playerName, score) {
+  saveScore: function(playerName, wallet, score) {
     return fetch('/api/leaderboard', {
       method: 'POST',
       headers: {
@@ -11,6 +11,7 @@ Game.leaderboard = {
       },
       body: JSON.stringify({
         name: playerName,
+        wallet: wallet,
         score: score
       })
     })

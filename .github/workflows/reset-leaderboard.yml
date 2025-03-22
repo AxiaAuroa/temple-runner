@@ -1,0 +1,15 @@
+name: Weekly Leaderboard Reset
+
+on:
+  schedule:
+    # Run at 00:00 UTC every Sunday
+    - cron: '0 0 * * 0'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  reset-leaderboard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reset Leaderboard
+        run: |
+          curl -X GET "https://your-netlify-site.netlify.app/.netlify/functions/reset-leaderboard?token=${{ secrets.RESET_TOKEN }}"
