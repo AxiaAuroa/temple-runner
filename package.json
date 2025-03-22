@@ -1,0 +1,9 @@
+{
+    "name": "temple-runner",
+    "version": "1.0.0",
+    "description": "Temple Runner - A challenging platformer game",
+    "main": "index.html",
+    "dependencies": {
+        "mongodb": "^4.17.2"
+    }
+}
